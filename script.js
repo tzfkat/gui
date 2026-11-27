@@ -119,7 +119,7 @@ taskList.addEventListener("change", (event) => {
         const li = event.target.closest("li")
         const newId = Number(li.dataset.id)
         tasks = toggleTask(tasks, newId)
-        writeLog(`Статус задачи ${li.children[1].textContent} измненен`)
+        writeLog(`Статус задачи ${tasks[newId].title} изменён`)
         renderTasks(tasks)
         renderTaskStats(tasks)
         saveTasks(tasks)
