@@ -1,7 +1,7 @@
 
 
 function isValidTask(item){
-    if (typeof item.id === "number" && typeof item.title === "string"  && typeof item.completed === "boolean")
+    if (typeof item?.id === "number" && typeof item?.title === "string"  && typeof item?.completed === "boolean")
     {return true
 } else {return false}
 }
@@ -34,7 +34,6 @@ function saveTasks(tasks) {
 }
 
 const taskStats = document.querySelector("#taskStats");
-const task = document.querySelector("#result");
 const taskForm = document.querySelector("#taskForm");
 const taskInput = document.querySelector("#taskInput");
 const status = document.querySelector("#status");
@@ -97,6 +96,7 @@ taskForm.addEventListener("submit", (event) => {
         renderTasks(tasks)
         renderTaskStats(tasks)
         saveTasks(tasks)
+        writeLog(`Добавлена задача ${title}`)
         taskInput.value = ""
     }
 });
@@ -119,6 +119,7 @@ taskList.addEventListener("change", (event) => {
         const li = event.target.closest("li")
         const newId = Number(li.dataset.id)
         tasks = toggleTask(tasks, newId)
+        writeLog(`Статус задачи ${li.children[1].textContent} измненен`)
         renderTasks(tasks)
         renderTaskStats(tasks)
         saveTasks(tasks)
@@ -131,7 +132,7 @@ taskList.addEventListener("click", (event) => {
         const li = button.closest("li");
         if (li) {
             tasks = deleteTask(tasks, Number(li.dataset.id));
-
+            writeLog(`Задача ${li.children[1].textContent} удалена`)
             renderTasks(tasks);
             renderTaskStats(tasks)
             saveTasks(tasks)
@@ -143,7 +144,6 @@ taskList.addEventListener("click", (event) => {
 function deleteTask(tasks, id) {
     return tasks.filter(task => task.id !== id);
 }
-renderTasks(tasks)
 
 function filterTasks(tasks, filter) {
     if (filter === "active") {
