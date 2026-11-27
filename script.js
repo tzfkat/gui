@@ -1,9 +1,51 @@
-let tasks = [
-    { id: 1, title: "Изучить JavaScript", completed: false },
-    { id: 2, title: "Разобраться с DOM", completed: true },
-    { id: 3, title: "Изучить React", completed: false }
-];
-let currentFilter = "all";
+
+
+function isValidTask(item){
+    const result = true
+    try {
+    if(!item.id.typeof("number")){
+        result= false
+    }
+    if(!item.title.typeof("string")){
+        result= false
+    }
+    if(!item.completed.typeof("boolean")){
+        result= false
+    }
+}
+    catch{return false}
+    return result
+
+}
+function loadTasks() {
+    try {
+        const tasksLoaded = localStorage.getItem("tasks")
+        if (tasksLoaded) {
+            const data =  JSON.parse(tasksLoaded)
+            if (Array.isArray(data)){
+                const result = data.filter(item => isValidTask(item));
+            return result}
+            else {return []}
+        }
+        else { return [] }
+    }
+    catch { return [] }
+}
+
+let tasks = loadTasks()
+const ALLOWED_FILTERS = ["all", "active", "completed"];
+function getFilter() {
+    const filter = localStorage.getItem("filter")
+        return ALLOWED_FILTERS.includes(filter) ? filter : "all";
+}
+let currentFilter = getFilter();
+
+
+function saveTasks(tasks) {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+const taskStats = document.querySelector("#taskStats");
 const task = document.querySelector("#result");
 const taskForm = document.querySelector("#taskForm");
 const taskInput = document.querySelector("#taskInput");
@@ -23,10 +65,11 @@ function writeLog(message) {
     console.log(message);
 }
 const taskList = document.querySelector("#taskList");
-
+renderTasks(tasks);
+renderTaskStats(tasks);
 function renderTasks(tasks) {
     taskList.textContent = ""
-    const filteredTasks = filterTasks(tasks,currentFilter)
+    const filteredTasks = filterTasks(tasks, currentFilter)
     filteredTasks.forEach(element => {
         const li = document.createElement("li");
         const checkbox = document.createElement("input")
@@ -61,11 +104,12 @@ taskForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const title = taskInput.value.trim();
-    if (title){
-    tasks = addTask(tasks, title)
-    renderTasks(tasks)
-    renderTaskStats(tasks)
-    taskInput.value = ""
+    if (title) {
+        tasks = addTask(tasks, title)
+        renderTasks(tasks)
+        renderTaskStats(tasks)
+        saveTasks(tasks)
+        taskInput.value = ""
     }
 });
 
@@ -89,6 +133,7 @@ taskList.addEventListener("change", (event) => {
         tasks = toggleTask(tasks, newId)
         renderTasks(tasks)
         renderTaskStats(tasks)
+        saveTasks(tasks)
     }
 });
 
@@ -98,9 +143,10 @@ taskList.addEventListener("click", (event) => {
         const li = button.closest("li");
         if (li) {
             tasks = deleteTask(tasks, Number(li.dataset.id));
-            
+
             renderTasks(tasks);
             renderTaskStats(tasks)
+            saveTasks(tasks)
         }
     }
 
@@ -112,31 +158,43 @@ function deleteTask(tasks, id) {
 renderTasks(tasks)
 
 function filterTasks(tasks, filter) {
-     if(filter === "active"){
-        return tasks.filter(task => !task.completed )
+    if (filter === "active") {
+        return tasks.filter(task => !task.completed)
     }
-    else if(filter === "completed"){
-        return tasks.filter(task => task.completed );
+    else if (filter === "completed") {
+        return tasks.filter(task => task.completed);
     }
     return tasks
 }
-filters.addEventListener("click",(event)=>{
-    const button = event.target.closest("button");
-if (button) {
-    currentFilter = button.dataset.filter
-    renderTasks(tasks)
-}
-})
 
 function getTaskStats(tasks) {
-    return  {
+    return {
         total: tasks.length,
-        active: tasks.filter((task => !task.completed )).length,
-        completed: tasks.filter((task => task.completed )).length,
+        active: tasks.filter((task => !task.completed)).length,
+        completed: tasks.filter((task => task.completed)).length,
     }
 }
-const taskStats = document.querySelector("#taskStats");
-function renderTaskStats(tasks){
+function renderTaskStats(tasks) {
     const stats = getTaskStats(tasks);
     taskStats.textContent = `Всего: ${stats.total} | Активных: ${stats.active} | Выполненных: ${stats.completed} `
 }
+filters.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (button) {
+        currentFilter = button.dataset.filter
+        renderTasks(tasks)
+        localStorage.setItem("filter", currentFilter)
+        renderFilters()
+    }
+})
+
+function renderFilters() {
+    const buttons = filters.querySelectorAll("button");
+
+    buttons.forEach((button) => {
+        button.classList.toggle(
+            "active", button.dataset.filter === currentFilter
+        )
+    });
+}
+renderFilters()
