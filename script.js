@@ -1,21 +1,9 @@
 
 
 function isValidTask(item){
-    const result = true
-    try {
-    if(!item.id.typeof("number")){
-        result= false
-    }
-    if(!item.title.typeof("string")){
-        result= false
-    }
-    if(!item.completed.typeof("boolean")){
-        result= false
-    }
-}
-    catch{return false}
-    return result
-
+    if (typeof item.id === "number" && typeof item.title === "string"  && typeof item.completed === "boolean")
+    {return true
+} else {return false}
 }
 function loadTasks() {
     try {
@@ -153,7 +141,7 @@ taskList.addEventListener("click", (event) => {
 
 });
 function deleteTask(tasks, id) {
-    return result = tasks.filter(task => task.id !== id);
+    return tasks.filter(task => task.id !== id);
 }
 renderTasks(tasks)
 
