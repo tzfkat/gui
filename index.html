@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript Lab — список задач</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #202631;
+      background: #f3f5f8;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px 56px; }
+    main { max-width: 920px; margin: 0 auto; }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.4rem); }
+    h2 { margin: 0 0 14px; font-size: 1.15rem; }
+    p { line-height: 1.55; }
+    .muted { color: #657080; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 18px; }
+    .panel { background: white; border: 1px solid #dfe4eb; border-radius: 14px; padding: 20px; box-shadow: 0 4px 16px #1c2b3a0a; }
+    .task-form { display: flex; gap: 8px; margin: 16px 0 18px; }
+    input { min-width: 0; flex: 1; border: 1px solid #cbd3de; border-radius: 8px; padding: 11px 12px; font: inherit; }
+    button { border: 0; border-radius: 8px; padding: 10px 13px; font: inherit; font-weight: 600; cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 3px solid #90b9ff; outline-offset: 2px; }
+    .add { color: white; background: #245fc7; }
+    .delete { color: #a12b2b; background: #fff0f0; padding: 7px 10px; }
+    .task-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .task-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 12px; border: 1px solid #e2e7ee; border-radius: 9px; }
+    .task-text { overflow-wrap: anywhere; }
+    .empty { padding: 18px 12px; text-align: center; color: #7a8492; border: 1px dashed #cbd3de; border-radius: 9px; }
+    .status { min-height: 24px; margin: 12px 0 0; color: #315d38; }
+    .log { min-height: 170px; max-height: 270px; overflow: auto; padding: 12px; border-radius: 9px; background: #151b25; color: #dce6f3; font: 12px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; }
+    .hint { background: #f1f6ff; border-left: 3px solid #4b82d5; padding: 10px 12px; border-radius: 5px; }
+    code { background: #edf0f4; border-radius: 4px; padding: 2px 5px; }
+    .checklist { padding-left: 20px; line-height: 1.7; }
+    .footer { margin-top: 18px; font-size: .9rem; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } body { padding-top: 20px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>JavaScript Lab: список задач</h1>
+    <p class="muted">Небольшая локальная песочница для практики JavaScript, DOM и событий. Добавляй задачи, удаляй их и наблюдай за событиями.</p>
+  </header>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>Мои задачи</h2>
+      <form id="taskForm" class="task-form">
+        <input id="taskInput" type="text" placeholder="Например, изучить event bubbling" autocomplete="off">
+        <button class="add" type="submit">Добавить</button>
+      </form>
+      <div id="filters">
+    <button data-filter="all">Все</button>
+    <button data-filter="active">Активные</button>
+    <button data-filter="completed">Выполненные</button>
+</div>
+<div id="taskStats"></div>
+      <ul id="taskList" class="task-list">
+          </ul>
+      <p id="status" class="status" aria-live="polite"></p>
+    </section>
+
+    <aside class="panel">
+      <h2>Наблюдение за событиями</h2>
+      <p class="muted">Здесь отображаются сообщения, которые JavaScript отправляет в учебный журнал.</p>
+      <div id="log" class="log" aria-live="polite">Лаборатория готова. Открой DevTools → Console, чтобы видеть console.log().</div>
+      <p class="footer"><button id="clearLog" type="button">Очистить журнал</button></p>
+    </aside>
+  </div>
+
+  <section class="panel" style="margin-top:18px">
+    <h2>Текущее упражнение</h2>
+    <p><strong>Задача 1 — делегирование событий.</strong> В файле <code>script.js</code> найди обработчик клика на <code>taskList</code>. Реализуй удаление задачи при нажатии на кнопку «Удалить».</p>
+    <div class="hint">
+      Условия:
+      <ul class="checklist">
+        <li>Используй один обработчик на <code>ul#taskList</code>.</li>
+        <li>Клик по тексту задачи не должен удалять её.</li>
+        <li>Клик по кнопке или по вложенной в неё иконке должен удалять соответствующий <code>li</code>.</li>
+        <li>Удаление должно работать и для задач, добавленных после загрузки страницы.</li>
+      </ul>
+    </div>
+    <p class="muted">Не смотри решение заранее: сначала попробуй написать обработчик самостоятельно. Когда закончишь, сравни с разбором в комментариях к script.js.</p>
+  </section>
+</main>
+
+<script src="localstorage.js"></script>
+</body>
+</html>
